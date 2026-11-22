@@ -2,11 +2,12 @@ import os
 
 from flask import Flask, Response, jsonify, render_template, request
 
-from analytics import ANALYTICS_LIST, analytics_de_exemplo
+from analytics import ANALYTICS_LIST, analytics_de_exemplo, submissoes_de_exemplo
 from configuracao import JSON_PARAMS
 from repositorio import RepositorioInstancias
 
 app = Flask(__name__)
+app.json.ensure_ascii = False
 instancias = RepositorioInstancias()
 
 REGISTO = {
@@ -79,6 +80,21 @@ def analytics():
     if not activity_id:
         return jsonify({"erro": "Falta o campo activityID no corpo JSON"}), 400
     return jsonify(analytics_de_exemplo(base_url(), activity_id))
+
+
+@app.get("/desafio/<activity_id>/analytics/<std_id>/<vista>")
+def analytics_qualitativos(activity_id, std_id, vista):
+    """Qualitative analytics pages: best submission code or submission history."""
+    submissoes = submissoes_de_exemplo(std_id)
+    if submissoes is None or vista not in ("codigo", "historico"):
+        return jsonify({"erro": "Analytic não encontrado"}), 404
+    return render_template(
+        "analytics_qualitativos.html",
+        activity_id=activity_id,
+        std_id=std_id,
+        vista=vista,
+        submissoes=submissoes,
+    )
 
 
 @app.route("/desafio/<activity_id>", methods=["GET", "POST"])

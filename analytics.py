@@ -47,3 +47,25 @@ def analytics_de_exemplo(base_url: str, activity_id: str) -> list[dict]:
         ]
         resultado.append({"inveniraStdID": std_id, "quantAnalytics": quant, "qualAnalytics": qual})
     return resultado
+
+
+_SUBMISSOES = {
+    "1001": [
+        {
+            "data": "2026-11-20 10:12",
+            "resultado": "1 de 3 testes ocultos",
+            "codigo": "function somaPares(lista) {\n  return lista.filter(n => n % 2 == 0).length;\n}",
+        },
+        {
+            "data": "2026-11-20 10:31",
+            "resultado": "3 de 3 testes ocultos",
+            "codigo": "function somaPares(lista) {\n  let soma = 0;\n  for (const n of lista) {\n    if (n % 2 === 0) soma += n;\n  }\n  return soma;\n}",
+        },
+    ],
+    "1002": [],
+}
+
+
+def submissoes_de_exemplo(std_id: str) -> list[dict] | None:
+    """Return a student's sample submissions, oldest first, or None if unknown."""
+    return _SUBMISSOES.get(std_id)
